@@ -21,3 +21,6 @@ if CAS_EMAIL_DOMAIN is set. Otherwise it will be set to *username@*
 The attribute name in extra attributes for display name. If the attribute can
 not be found the username will be used instead.
 *  NAME = :Name
+
+Auto approve newly created users.
+*  APPROVED = true

@@ -26,6 +26,9 @@ class CASAuthenticator < ::Auth::Authenticator
   #If the attribute can not be found the username will be used instead.
   NAME = :Name
 
+  #Automatically approve the new user
+  APPROVED = true
+
   def name
     'cas'
   end
