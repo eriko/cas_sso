@@ -2,17 +2,18 @@
 # about: Authenticate with discourse with CAS
 # version: 0.1.0
 # author: Erik Ordway
+require 'rubygems'
 
-require "rubygems"
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
-gem 'addressable',  '2.3.4' , require: false
+gem 'addressable', '2.3.4', require: false
 gem 'omniauth-cas', '1.0.4'
+
 
 class CASAuthenticator < ::Auth::Authenticator
 
   #Required settings
-  CAS_URL = 'https://YOUR.CAS.SERVER/cas'
+  CAS_URL = 'https://YOUR.CAS.SEVER/cas'
 
   # Optional settings
   #attribute name in extra attributes for email address
@@ -20,7 +21,7 @@ class CASAuthenticator < ::Auth::Authenticator
   #if the above is not set the plugin will set the
   #email address to username@CAS_EMAIL_DOMAIN if CAS_EMAIL_DOMAIN is set.
   #otherwise it will be set to username@
-  CAS_EMAIL_DOMAIN = 'YOU.EMAIL.DOMAIN'
+  CAS_EMAIL_DOMAIN = 'YOUR.EMAIL.DOMAIN'
 
   #The attribute name in extra attributes for display name.
   #If the attribute can not be found the username will be used instead.
@@ -48,13 +49,13 @@ class CASAuthenticator < ::Auth::Authenticator
     result.email = email
     result.email_valid = true
 
-    result.username  = auth_token[:uid]
+    result.username = auth_token[:uid]
 
-    result.name  = if auth_token[:extra] && auth_token[:extra][NAME]
-                           auth_token[:extra]["Name"]
-                         else
-                           auth_token[:uid]
-                         end
+    result.name = if auth_token[:extra] && auth_token[:extra][NAME]
+                    auth_token[:extra]["Name"]
+                  else
+                    auth_token[:uid]
+                  end
 
     # plugin specific data storage
     current_info = ::PluginStore.get("cas", "cas_uid_#{auth_token[:uid]}")
@@ -69,12 +70,14 @@ class CASAuthenticator < ::Auth::Authenticator
 
   def after_create_account(user, auth)
     user.update_attribute(:approved, APPROVED)
-    ::PluginStore.set("cas", "cas_uid_#{auth[:username]}", {user_id: user.id })
+    ::PluginStore.set("cas", "cas_uid_#{auth[:username]}", {user_id: user.id})
   end
 
+
   def register_middleware(omniauth)
-    omniauth.provider :cas,
-                      url: CAS_URL
+    #by seting :setup => true should configure the strategy at execution per
+    # https://github.com/intridea/omniauth/wiki/Setup-Phase
+    omniauth.provider :cas, :url => CAS_URL, :setup => true
   end
 end
 
@@ -86,8 +89,6 @@ auth_provider :title => 'with CAS',
               :authenticator => CASAuthenticator.new
 
 
-# We ship with zocial, it may have an icon you like http://zocial.smcllns.com/sample.html
-#  in our current case we have an icon for vk
 register_css <<CSS
 
 .btn-social.cas {
