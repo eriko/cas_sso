@@ -6,29 +6,46 @@ require 'rubygems'
 
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
-gem 'addressable', '2.3.4', require: false
+gem 'addressable', '2.3.5', require: false
 gem 'omniauth-cas', '1.0.4'
+
+after_initialize do
+  class SiteSetting < ActiveRecord::Base
+    extend SiteSettingExtension
+    #Required settings
+    setting(:plugin_cas_sso_url, 'https://YOUR.CAS.SEVER/cas')
+
+    # Optional settings
+
+    #The attribute name in extra attributes for display name.
+    #If the attribute can not be found the username will be used instead.
+    setting(:plugin_cas_sso_email, ':Name')
+    #attribute name in extra attributes for email address
+    setting(:plugin_cas_sso_email, ':UserPrincipalName')
+    #if the above is not set the plugin will set the
+    #email address to username@CAS_EMAIL_DOMAIN if CAS_EMAIL_DOMAIN is set.
+    #otherwise it will be set to username@
+    setting(:plugin_cas_sso_email_domain, 'YOUR.EMAIL.DOMAIN')
+
+
+    #Automatically approve the new user
+    setting(:plugin_cas_sso_user_approved, true)
+  end
+end
 
 
 class CASAuthenticator < ::Auth::Authenticator
 
-  #Required settings
-  CAS_URL = 'https://YOUR.CAS.SEVER/cas'
 
-  # Optional settings
-  #attribute name in extra attributes for email address
+  CAS_URL = 'https://YOUR.CAS.SEVER/cas'
+  NAME = :Name
   EMAIL = :UserPrincipalName
-  #if the above is not set the plugin will set the
-  #email address to username@CAS_EMAIL_DOMAIN if CAS_EMAIL_DOMAIN is set.
-  #otherwise it will be set to username@
   CAS_EMAIL_DOMAIN = 'YOUR.EMAIL.DOMAIN'
 
-  #The attribute name in extra attributes for display name.
-  #If the attribute can not be found the username will be used instead.
-  NAME = :Name
 
   #Automatically approve the new user
   APPROVED = true
+
 
   def name
     'cas'
@@ -75,6 +92,7 @@ class CASAuthenticator < ::Auth::Authenticator
 
 
   def register_middleware(omniauth)
+
     #by seting :setup => true should configure the strategy at execution per
     # https://github.com/intridea/omniauth/wiki/Setup-Phase
     omniauth.provider :cas, :url => CAS_URL, :setup => true
