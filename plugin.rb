@@ -3,6 +3,9 @@
 # version: 0.1.0
 # author: Erik Ordway
 require 'rubygems'
+#require_relative './../../app/models/site_setting'
+#require '../../app/models/site_setting'
+
 
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
@@ -10,41 +13,49 @@ gem 'addressable', '2.3.5', require: false
 gem 'omniauth-cas', '1.0.4'
 
 after_initialize do
-  class SiteSetting < ActiveRecord::Base
-    extend SiteSettingExtension
-    #Required settings
-    setting(:plugin_cas_sso_url, 'https://YOUR.CAS.SEVER/cas')
-
-    # Optional settings
-
-    #The attribute name in extra attributes for display name.
-    #If the attribute can not be found the username will be used instead.
-    setting(:plugin_cas_sso_email, ':Name')
-    #attribute name in extra attributes for email address
-    setting(:plugin_cas_sso_email, ':UserPrincipalName')
-    #if the above is not set the plugin will set the
-    #email address to username@CAS_EMAIL_DOMAIN if CAS_EMAIL_DOMAIN is set.
-    #otherwise it will be set to username@
-    setting(:plugin_cas_sso_email_domain, 'YOUR.EMAIL.DOMAIN')
+  #The SiteSettings seems to be processed into the application after the processing of after_initialize so include it now.
+  require File.expand_path('../../../app/models/site_setting', __FILE__)
 
 
-    #Automatically approve the new user
-    setting(:plugin_cas_sso_user_approved, true)
-  end
+  #Required settings
+  SiteSetting.setting(:plugin_cas_sso_url,
+                      'https://YOUR.CAS.SEVER/cas',
+                      {description: 'Full url of your CAS server'})
+  #setting(:plugin_cas_sso_url, 'https://YOUR.CAS.SEVER/cas')
+
+  # Optional settings
+
+  #The attribute name in extra attributes for display name.
+  #If the attribute can not be found the username will be used instead.
+  SiteSetting.setting(:plugin_cas_sso_name,
+                      'Name',
+                      {description: 'Attribute in CAS return values that is the users display name'})
+  #setting(:plugin_cas_sso_email, ':Name')
+  #attribute name in extra attributes for email address
+  SiteSetting.setting(:plugin_cas_sso_email,
+                      'UserPrincipalName',
+                      {description: 'Attribute in CAS return values that is the users email address'})
+  #setting(:plugin_cas_sso_email, ':UserPrincipalName')
+  #if the above is not set the plugin will set the
+  #email address to username@CAS_EMAIL_DOMAIN if CAS_EMAIL_DOMAIN is set.
+  #otherwise it will be set to username@
+  SiteSetting.setting(:plugin_cas_sso_email_domain,
+                      'YOUR.EMAIL.DOMAIN',
+                      {description: 'domain name to use in creating email address if one is not available in the CAS return attributes'})
+  #setting(:plugin_cas_sso_email_domain, 'YOUR.EMAIL.DOMAIN')
+
+
+  #Automatically approve the new user
+  SiteSetting.setting(:plugin_cas_sso_user_approved,
+                      true,
+                      {description: 'Automatically approve users that are created via CAS'})
+  #setting(:plugin_cas_sso_user_approved, true)
+  SiteSetting.refresh!
+
 end
 
 
 class CASAuthenticator < ::Auth::Authenticator
-
-
-  CAS_URL = 'https://YOUR.CAS.SEVER/cas'
-  NAME = :Name
-  EMAIL = :UserPrincipalName
-  CAS_EMAIL_DOMAIN = 'YOUR.EMAIL.DOMAIN'
-
-
-  #Automatically approve the new user
-  APPROVED = true
 
 
   def name
@@ -53,12 +64,11 @@ class CASAuthenticator < ::Auth::Authenticator
 
   def after_authenticate(auth_token)
     result = Auth::Result.new
-
     #if the email address is set in the extra attributes and we know the accessor use it here
-    email = auth_token[:extra][EMAIL] if (auth_token[:extra] && auth_token[:extra][EMAIL])
+    email = auth_token[:extra][SiteSetting.plugin_cas_sso_email] if (auth_token[:extra] && auth_token[:extra][SiteSetting.plugin_cas_sso_email])
     #if we could not get the email address from the extra attributes try to set it base on the username
-    email ||= unless CAS_EMAIL_DOMAIN.nil?
-                "#{auth_token[:uid]}@#{CAS_EMAIL_DOMAIN}"
+    email ||= unless SiteSetting.plugin_cas_sso_email_domain.nil?
+                "#{auth_token[:uid]}@#{SiteSetting.plugin_cas_sso_email_domain}"
               else
                 auth_token[:uid]
               end
@@ -68,8 +78,8 @@ class CASAuthenticator < ::Auth::Authenticator
 
     result.username = auth_token[:uid]
 
-    result.name = if auth_token[:extra] && auth_token[:extra][NAME]
-                    auth_token[:extra]["Name"]
+    result.name = if auth_token[:extra] && auth_token[:extra][SiteSetting.plugin_cas_sso_name]
+                    auth_token[:extra][SiteSetting.plugin_cas_sso_name]
                   else
                     auth_token[:uid]
                   end
@@ -86,7 +96,7 @@ class CASAuthenticator < ::Auth::Authenticator
   end
 
   def after_create_account(user, auth)
-    user.update_attribute(:approved, APPROVED)
+    user.update_attribute(:approved, SiteSetting.plugin_cas_sso_user_approved)
     ::PluginStore.set("cas", "cas_uid_#{auth[:username]}", {user_id: user.id})
   end
 
@@ -95,7 +105,8 @@ class CASAuthenticator < ::Auth::Authenticator
 
     #by seting :setup => true should configure the strategy at execution per
     # https://github.com/intridea/omniauth/wiki/Setup-Phase
-    omniauth.provider :cas, :url => CAS_URL, :setup => true
+    #omniauth.provider :cas, :url => CAS_URL, :setup => true
+    omniauth.provider :cas, :url => SiteSetting.plugin_cas_sso_url, :setup => true
   end
 end
 
