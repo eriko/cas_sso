@@ -9,8 +9,8 @@ require 'rubygems'
 
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
-gem 'addressable', '2.3.5', require: false
-gem 'omniauth-cas', '1.0.4'
+#gem 'addressable', '2.3.5', require: false
+#gem 'omniauth-cas', '1.0.4'
 
 after_initialize do
   #The SiteSettings seems to be processed into the application after the processing of after_initialize so include it now.
@@ -18,10 +18,38 @@ after_initialize do
 
 
   #Required settings
-  SiteSetting.setting(:plugin_cas_sso_url,
-                      'https://YOUR.CAS.SEVER/cas',
-                      {description: 'Full url of your CAS server'})
-  #setting(:plugin_cas_sso_url, 'https://YOUR.CAS.SEVER/cas')
+  #SiteSetting.setting(:plugin_cas_sso_url,
+  #                    'https://YOUR.CAS.SE/cas',
+  #                    {description: 'Full url of your CAS server'})
+  SiteSetting.setting(:plugin_cas_sso_host,
+                      'YOUR.CAS.SERVER',
+                      {description: 'Hostname of cas server (no http or https should used here)'})
+
+
+  SiteSetting.setting(:plugin_cas_sso_port,
+                      '443',
+                      {description: 'If you have cas server running on a non standard port '})
+
+  SiteSetting.setting(:plugin_cas_sso_path,
+                      '',
+                      {description: 'Path in CAS url probably blank or "/cas"'})
+
+  SiteSetting.setting(:plugin_cas_sso_ssl,
+                      true,
+                      {description: 'For testing purposes you can turn of SSL verification'})
+  SiteSetting.setting(:plugin_cas_sso_login_url,
+                      '/login',
+                      {description: 'Path to login. Path setting will be applied so you should probably use one or another.'})
+  SiteSetting.setting(:plugin_cas_sso_logout_url,
+                      '/logout',
+                      {description: 'Path to logout. Path setting will be applied so you should probably use one or another. '})
+  SiteSetting.setting(:plugin_cas_sso_service_validate_url,
+                      '/service_validate_url',
+                      {description: 'Path to login. Path setting will be applied so you should probably use one or another. '})
+  SiteSetting.setting(:plugin_cas_sso_uid_key,
+                      'user',
+                      {description: 'The key in the cas attributes that denotes the uid_key if you have a non standard configuration'})
+
 
   # Optional settings
 
@@ -102,16 +130,28 @@ class CASAuthenticator < ::Auth::Authenticator
 
 
   def register_middleware(omniauth)
-
+    Rails.logger.info "in cas_sso plugin with omniauth of #{omniauth}"
     #by seting :setup => true should configure the strategy at execution per
     # https://github.com/intridea/omniauth/wiki/Setup-Phase
     #omniauth.provider :cas, :url => CAS_URL, :setup => true
-    omniauth.provider :cas, :url => SiteSetting.plugin_cas_sso_url, :setup => true
+    #omniauth.provider :cas, :url => SiteSetting.plugin_cas_sso_url, :setup => true
+    omniauth.provider :cas,
+                      :setup => lambda { |env|
+                        strategy = env["omniauth.strategy"]
+                        strategy.options[:host] = SiteSetting.plugin_cas_sso_host
+                        strategy.options[:port] = SiteSetting.plugin_cas_sso_port
+                        strategy.options[:path] = SiteSetting.plugin_cas_sso_path
+                        strategy.options[:ssl] = SiteSetting.plugin_cas_sso_ssl
+                        strategy.options[:service_validate_url] = SiteSetting.plugin_cas_sso_service_validate_url
+                        strategy.options[:login_url] = SiteSetting.plugin_cas_sso_login_url
+                        strategy.options[:logout_url] = SiteSetting.plugin_cas_sso_logout_url
+                        strategy.options[:uid_key] = SiteSetting.plugin_cas_sso_uid_key
+                      }
   end
 end
 
 
-auth_provider :title => 'with CAS',
+auth_provider :title => 'with CAS FUCK',
               :message => 'Log in via CAS (Make sure pop up blockers are not enabled).',
               :frame_width => 920,
               :frame_height => 800,
