@@ -151,7 +151,7 @@ class CASAuthenticator < ::Auth::Authenticator
 end
 
 
-auth_provider :title => 'with CAS FUCK',
+auth_provider :title => 'with CAS',
               :message => 'Log in via CAS (Make sure pop up blockers are not enabled).',
               :frame_width => 920,
               :frame_height => 800,
