@@ -9,75 +9,21 @@ require 'rubygems'
 
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
-#gem 'addressable', '2.3.5', require: false
+gem 'addressable', '2.3.5', require: false
 #gem 'omniauth-cas', '1.0.4'
 
 after_initialize do
   #The SiteSettings seems to be processed into the application after the processing of after_initialize so include it now.
   require File.expand_path('../../../app/models/site_setting', __FILE__)
 
+  SiteSettings::YamlLoader.new( File.expand_path('../settings.yml', __FILE__) ).load do |category, name, default, opts|
+    if opts.delete(:client)
+      SiteSetting.client_setting(name, default, opts.merge(category: category))
+    else
+      SiteSetting.setting(name, default, opts.merge(category: category))
+    end
+  end
 
-  #Required settings
-  #SiteSetting.setting(:plugin_cas_sso_url,
-  #                    'https://YOUR.CAS.SE/cas',
-  #                    {description: 'Full url of your CAS server'})
-  SiteSetting.setting(:plugin_cas_sso_host,
-                      'YOUR.CAS.SERVER',
-                      {description: 'Hostname of cas server (no http or https should used here)'})
-
-
-  SiteSetting.setting(:plugin_cas_sso_port,
-                      '443',
-                      {description: 'If you have cas server running on a non standard port '})
-
-  SiteSetting.setting(:plugin_cas_sso_path,
-                      '',
-                      {description: 'Path in CAS url probably blank or "/cas"'})
-
-  SiteSetting.setting(:plugin_cas_sso_ssl,
-                      true,
-                      {description: 'For testing purposes you can turn of SSL verification'})
-  SiteSetting.setting(:plugin_cas_sso_login_url,
-                      '/login',
-                      {description: 'Path to login. Path setting will be applied so you should probably use one or another.'})
-  SiteSetting.setting(:plugin_cas_sso_logout_url,
-                      '/logout',
-                      {description: 'Path to logout. Path setting will be applied so you should probably use one or another. '})
-  SiteSetting.setting(:plugin_cas_sso_service_validate_url,
-                      '/service_validate_url',
-                      {description: 'Path to login. Path setting will be applied so you should probably use one or another. '})
-  SiteSetting.setting(:plugin_cas_sso_uid_key,
-                      'user',
-                      {description: 'The key in the cas attributes that denotes the uid_key if you have a non standard configuration'})
-
-
-  # Optional settings
-
-  #The attribute name in extra attributes for display name.
-  #If the attribute can not be found the username will be used instead.
-  SiteSetting.setting(:plugin_cas_sso_name,
-                      'Name',
-                      {description: 'Attribute in CAS return values that is the users display name'})
-  #setting(:plugin_cas_sso_email, ':Name')
-  #attribute name in extra attributes for email address
-  SiteSetting.setting(:plugin_cas_sso_email,
-                      'UserPrincipalName',
-                      {description: 'Attribute in CAS return values that is the users email address'})
-  #setting(:plugin_cas_sso_email, ':UserPrincipalName')
-  #if the above is not set the plugin will set the
-  #email address to username@CAS_EMAIL_DOMAIN if CAS_EMAIL_DOMAIN is set.
-  #otherwise it will be set to username@
-  SiteSetting.setting(:plugin_cas_sso_email_domain,
-                      'YOUR.EMAIL.DOMAIN',
-                      {description: 'domain name to use in creating email address if one is not available in the CAS return attributes'})
-  #setting(:plugin_cas_sso_email_domain, 'YOUR.EMAIL.DOMAIN')
-
-
-  #Automatically approve the new user
-  SiteSetting.setting(:plugin_cas_sso_user_approved,
-                      true,
-                      {description: 'Automatically approve users that are created via CAS'})
-  #setting(:plugin_cas_sso_user_approved, true)
   SiteSetting.refresh!
 
 end
@@ -131,6 +77,7 @@ class CASAuthenticator < ::Auth::Authenticator
 
   def register_middleware(omniauth)
     Rails.logger.info "in cas_sso plugin with omniauth of #{omniauth}"
+
     #by seting :setup => true should configure the strategy at execution per
     # https://github.com/intridea/omniauth/wiki/Setup-Phase
     #omniauth.provider :cas, :url => CAS_URL, :setup => true
@@ -157,6 +104,9 @@ auth_provider :title => 'with CAS',
               :frame_height => 800,
               :authenticator => CASAuthenticator.new
 
+puts "the locale file to register is a #{File.expand_path('../locale.yml', __FILE__)}"
+
+register_locale([File.expand_path('../locale.yml', __FILE__)])
 
 register_css <<CSS
 
