@@ -1,8 +1,4 @@
 en:
-  admin:
-    site_settings:
-      categories:
-        plugin: 'Plugins'
   site_settings:
     plugin_cas_sso_host: 'Hostname of cas server (no http or https should used here)'
     plugin_cas_sso_port: 'If you have cas server running on a non standard port '

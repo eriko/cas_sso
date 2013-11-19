@@ -1,4 +1,4 @@
-uncategorized:
+plugin:
   plugin_cas_sso_host:
     default: 'YOUR.CAS.SERVER'
   plugin_cas_sso_port:
