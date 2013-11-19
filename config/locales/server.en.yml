@@ -13,3 +13,7 @@ en:
     plugin_cas_sso_email: 'Attribute in CAS return values that is the users email address'
     plugin_cas_sso_email_domain: 'domain name to use in creating email address if one is not available in the CAS return attributes'
     plugin_cas_sso_user_approved: 'Automatically approve users that are created via CAS'
+  admin:
+    site_settings:
+      categories:
+        plugin:  'Plugins'

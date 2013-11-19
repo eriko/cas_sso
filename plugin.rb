@@ -16,7 +16,7 @@ after_initialize do
   #The SiteSettings seems to be processed into the application after the processing of after_initialize so include it now.
   require File.expand_path('../../../app/models/site_setting', __FILE__)
 
-  SiteSettings::YamlLoader.new( File.expand_path('../settings.yml', __FILE__) ).load do |category, name, default, opts|
+  SiteSettings::YamlLoader.new( File.expand_path('../config/settings.yml', __FILE__) ).load do |category, name, default, opts|
     if opts.delete(:client)
       SiteSetting.client_setting(name, default, opts.merge(category: category))
     else
@@ -104,9 +104,6 @@ auth_provider :title => 'with CAS',
               :frame_height => 800,
               :authenticator => CASAuthenticator.new
 
-puts "the locale file to register is a #{File.expand_path('../locale.yml', __FILE__)}"
-
-register_locale([File.expand_path('../locale.yml', __FILE__)])
 
 register_css <<CSS
 
