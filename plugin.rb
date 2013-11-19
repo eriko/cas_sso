@@ -12,21 +12,7 @@ require 'rubygems'
 gem 'addressable', '2.3.5', require: false
 #gem 'omniauth-cas', '1.0.4'
 
-after_initialize do
-  #The SiteSettings seems to be processed into the application after the processing of after_initialize so include it now.
-  require File.expand_path('../../../app/models/site_setting', __FILE__)
 
-  SiteSettings::YamlLoader.new( File.expand_path('../config/settings.yml', __FILE__) ).load do |category, name, default, opts|
-    if opts.delete(:client)
-      SiteSetting.client_setting(name, default, opts.merge(category: category))
-    else
-      SiteSetting.setting(name, default, opts.merge(category: category))
-    end
-  end
-
-  SiteSetting.refresh!
-
-end
 
 
 class CASAuthenticator < ::Auth::Authenticator
@@ -78,10 +64,6 @@ class CASAuthenticator < ::Auth::Authenticator
   def register_middleware(omniauth)
     Rails.logger.info "in cas_sso plugin with omniauth of #{omniauth}"
 
-    #by seting :setup => true should configure the strategy at execution per
-    # https://github.com/intridea/omniauth/wiki/Setup-Phase
-    #omniauth.provider :cas, :url => CAS_URL, :setup => true
-    #omniauth.provider :cas, :url => SiteSetting.plugin_cas_sso_url, :setup => true
     omniauth.provider :cas,
                       :setup => lambda { |env|
                         strategy = env["omniauth.strategy"]
