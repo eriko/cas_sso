@@ -13,9 +13,13 @@ Then add
 
 to your Gemfile or add
     `, git: 'https://github.com/dlindahl/omniauth-cas.git', branch: 'master'`
+
 to the existing
     `gem 'omniauth-cas'`
-if it already exists.  As usual now you will have to run `bundle install` and restart the application.
+
+if it already exists.
+
+  As usual now you will have to run `bundle install` and restart the application.
 The initial restart maybe a little slower than usual as the plugin also installs any plugins that it needs.
  In this case that is `addressable`.  This slow down should be a one time event unless the plugin is updated.
 
