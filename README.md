@@ -29,6 +29,7 @@ Setup
 You will need to got to http://YOUR.DISCOURSE.SERVER/admin/site_settings/category/cas_sso  and configure some settings.
 At minimum you will need to set the `plugin_cas_sso_url` .  If your cas server is configured in a manner out of the norm
 you may need to use the other settings.  To do so wipe out `plugin_cas_sso_url` setting as it will override the other settings like
+
   `cas_sso_host:
     default: 'YOUR.CAS.SERVER'
 
