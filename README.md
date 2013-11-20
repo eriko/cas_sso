@@ -30,29 +30,31 @@ You will need to got to http://YOUR.DISCOURSE.SERVER/admin/site_settings/categor
 At minimum you will need to set the `plugin_cas_sso_url` .  If your cas server is configured in a manner out of the norm
 you may need to use the other settings.  To do so wipe out `plugin_cas_sso_url` setting as it will override the other settings like
 
-  `cas_sso_host:
-    default: 'YOUR.CAS.SERVER'
+  `
+  cas_sso_host:
+    default: 'YOUR.CAS.SERVER'`
 
-  cas_sso_port:
-    default: '443'
+  `cas_sso_port:
+    default: '443'`
 
-  cas_sso_path:
-    default: ''
+  `cas_sso_path:
+    default: ''`
 
-  cas_sso_ssl:
-    default: true
+  `cas_sso_ssl:
+    default: true`
 
-  cas_sso_login_url:
-    default: '/login'
+  `cas_sso_login_url:
+    default: '/login'`
 
-  cas_sso_logout_url:
-    default: '/logout'
+  `cas_sso_logout_url:
+    default: '/logout'`
 
-  cas_sso_service_validate_url:
-    default: '/service_validate_url'
+  `cas_sso_service_validate_url:
+    default: '/service_validate_url'`
 
-  cas_sso_uid_field:
-    default: 'user' `
+  `cas_sso_uid_field:
+    default: 'user' 
+    `
 
 These are set to reasonable defaults but if you need to use them to deal if an oddly configured CAS then they are just a starting point.
 
@@ -87,5 +89,5 @@ Auto approve newly created users.
 
 Support
 -------
-Tag me `eriko` on http:\\meta.discourse.org in the `support` category
+Tag me `eriko` on http://meta.discourse.org in the `support` category
 
