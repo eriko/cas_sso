@@ -1,18 +1,18 @@
 en:
   site_settings:
-    plugin_cas_sso_host: 'Hostname of cas server (no http or https should used here)'
-    plugin_cas_sso_port: 'If you have cas server running on a non standard port '
-    plugin_cas_sso_path: 'Path in CAS url probably blank or "/cas"'
-    plugin_cas_sso_ssl: 'For testing purposes you can turn of SSL verification'
-    plugin_cas_sso_url: 'Path to login. Path setting will be applied so you should probably use one or another.'
-    plugin_cas_sso_login_url: 'Partial path to login. Path setting will be applied so you should probably use one or another.'
-    plugin_cas_sso_logout_url: 'Partial path to logout. Path setting will be applied so you should probably use one or another.'
-    plugin_cas_sso_service_validate_url: 'Partial path to service validate. Path setting will be applied so you should probably use one or another.'
-    plugin_cas_sso_uid_key: 'The key in the cas attributes that denotes the uid_key if you have a non standard configuration'
-    plugin_cas_sso_name: 'Attribute in CAS return values that is the users display name'
-    plugin_cas_sso_email: 'Attribute in CAS return values that is the users email address'
-    plugin_cas_sso_email_domain: 'domain name to use in creating email address if one is not available in the CAS return attributes'
-    plugin_cas_sso_user_approved: 'Automatically approve users that are created via CAS'
+    cas_sso_host: 'Hostname of cas server (no http or https should used here)'
+    cas_sso_port: 'If you have cas server running on a non standard port '
+    cas_sso_path: 'Path in CAS url probably blank or "/cas"'
+    cas_sso_ssl: 'For testing purposes you can turn of SSL verification'
+    cas_sso_url: 'Path to login. Path setting will be applied so you should probably use one or another.'
+    cas_sso_login_url: 'Partial path to login. Path setting will be applied so you should probably use one or another.'
+    cas_sso_logout_url: 'Partial path to logout. Path setting will be applied so you should probably use one or another.'
+    cas_sso_service_validate_url: 'Partial path to service validate. Path setting will be applied so you should probably use one or another.'
+    cas_sso_uid_key: 'The key in the cas attributes that denotes the uid_key if you have a non standard configuration'
+    cas_sso_name: 'Attribute in CAS return values that is the users display name'
+    cas_sso_email: 'Attribute in CAS return values that is the users email address'
+    cas_sso_email_domain: 'domain name to use in creating email address if one is not available in the CAS return attributes'
+    cas_sso_user_approved: 'Automatically approve users that are created via CAS'
   admin:
     site_settings:
       categories:

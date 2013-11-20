@@ -25,10 +25,10 @@ class CASAuthenticator < ::Auth::Authenticator
   def after_authenticate(auth_token)
     result = Auth::Result.new
     #if the email address is set in the extra attributes and we know the accessor use it here
-    email = auth_token[:extra][SiteSetting.plugin_cas_sso_email] if (auth_token[:extra] && auth_token[:extra][SiteSetting.plugin_cas_sso_email])
+    email = auth_token[:extra][SiteSetting.cas_sso_email] if (auth_token[:extra] && auth_token[:extra][SiteSetting.cas_sso_email])
     #if we could not get the email address from the extra attributes try to set it base on the username
-    email ||= unless SiteSetting.plugin_cas_sso_email_domain.nil?
-                "#{auth_token[:uid]}@#{SiteSetting.plugin_cas_sso_email_domain}"
+    email ||= unless SiteSetting.cas_sso_email_domain.nil?
+                "#{auth_token[:uid]}@#{SiteSetting.cas_sso_email_domain}"
               else
                 auth_token[:uid]
               end
@@ -38,8 +38,8 @@ class CASAuthenticator < ::Auth::Authenticator
 
     result.username = auth_token[:uid]
 
-    result.name = if auth_token[:extra] && auth_token[:extra][SiteSetting.plugin_cas_sso_name]
-                    auth_token[:extra][SiteSetting.plugin_cas_sso_name]
+    result.name = if auth_token[:extra] && auth_token[:extra][SiteSetting.cas_sso_name]
+                    auth_token[:extra][SiteSetting.cas_sso_name]
                   else
                     auth_token[:uid]
                   end
@@ -56,7 +56,7 @@ class CASAuthenticator < ::Auth::Authenticator
   end
 
   def after_create_account(user, auth)
-    user.update_attribute(:approved, SiteSetting.plugin_cas_sso_user_approved)
+    user.update_attribute(:approved, SiteSetting.cas_sso_user_approved)
     ::PluginStore.set("cas", "cas_uid_#{auth[:username]}", {user_id: user.id})
   end
 
@@ -67,14 +67,14 @@ class CASAuthenticator < ::Auth::Authenticator
     omniauth.provider :cas,
                       :setup => lambda { |env|
                         strategy = env["omniauth.strategy"]
-                        strategy.options[:host] = SiteSetting.plugin_cas_sso_host
-                        strategy.options[:port] = SiteSetting.plugin_cas_sso_port
-                        strategy.options[:path] = SiteSetting.plugin_cas_sso_path
-                        strategy.options[:ssl] = SiteSetting.plugin_cas_sso_ssl
-                        strategy.options[:service_validate_url] = SiteSetting.plugin_cas_sso_service_validate_url
-                        strategy.options[:login_url] = SiteSetting.plugin_cas_sso_login_url
-                        strategy.options[:logout_url] = SiteSetting.plugin_cas_sso_logout_url
-                        strategy.options[:uid_key] = SiteSetting.plugin_cas_sso_uid_key
+                        strategy.options[:host] = SiteSetting.cas_sso_host
+                        strategy.options[:port] = SiteSetting.cas_sso_port
+                        strategy.options[:path] = SiteSetting.cas_sso_path
+                        strategy.options[:ssl] = SiteSetting.cas_sso_ssl
+                        strategy.options[:service_validate_url] = SiteSetting.cas_sso_service_validate_url
+                        strategy.options[:login_url] = SiteSetting.cas_sso_login_url
+                        strategy.options[:logout_url] = SiteSetting.cas_sso_logout_url
+                        strategy.options[:uid_key] = SiteSetting.cas_sso_uid_key
                       }
   end
 end
