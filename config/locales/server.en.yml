@@ -1,10 +1,10 @@
 en:
   site_settings:
+    cas_sso_url: 'If you have a normal CAS setup you only need to use this one.  If not clear it and use the others.'
     cas_sso_host: 'Hostname of cas server (no http or https should used here)'
     cas_sso_port: 'If you have cas server running on a non standard port '
     cas_sso_path: 'Path in CAS url probably blank or "/cas"'
     cas_sso_ssl: 'For testing purposes you can turn of SSL verification'
-    cas_sso_url: 'Path to login. Path setting will be applied so you should probably use one or another.'
     cas_sso_login_url: 'Partial path to login. Path setting will be applied so you should probably use one or another.'
     cas_sso_logout_url: 'Partial path to logout. Path setting will be applied so you should probably use one or another.'
     cas_sso_service_validate_url: 'Partial path to service validate. Path setting will be applied so you should probably use one or another.'

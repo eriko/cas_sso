@@ -13,8 +13,6 @@ gem 'addressable', '2.3.5', require: false
 #gem 'omniauth-cas', '1.0.4'
 
 
-
-
 class CASAuthenticator < ::Auth::Authenticator
 
 
@@ -64,18 +62,26 @@ class CASAuthenticator < ::Auth::Authenticator
   def register_middleware(omniauth)
     Rails.logger.info "in cas_sso plugin with omniauth of #{omniauth}"
 
-    omniauth.provider :cas,
-                      :setup => lambda { |env|
-                        strategy = env["omniauth.strategy"]
-                        strategy.options[:host] = SiteSetting.cas_sso_host
-                        strategy.options[:port] = SiteSetting.cas_sso_port
-                        strategy.options[:path] = SiteSetting.cas_sso_path
-                        strategy.options[:ssl] = SiteSetting.cas_sso_ssl
-                        strategy.options[:service_validate_url] = SiteSetting.cas_sso_service_validate_url
-                        strategy.options[:login_url] = SiteSetting.cas_sso_login_url
-                        strategy.options[:logout_url] = SiteSetting.cas_sso_logout_url
-                        strategy.options[:uid_key] = SiteSetting.cas_sso_uid_key
-                      }
+    unless SiteSetting.cas_sso_url.empty?
+      omniauth.provider :cas,
+                        :setup => lambda { |env|
+                          strategy = env["omniauth.strategy"]
+                          strategy.options[:url] = SiteSetting.cas_sso_url
+                        }
+    else
+      omniauth.provider :cas,
+                        :setup => lambda { |env|
+                          strategy = env["omniauth.strategy"]
+                          strategy.options[:host] = SiteSetting.cas_sso_host
+                          strategy.options[:port] = SiteSetting.cas_sso_port
+                          strategy.options[:path] = SiteSetting.cas_sso_path
+                          strategy.options[:ssl] = SiteSetting.cas_sso_ssl
+                          strategy.options[:service_validate_url] = SiteSetting.cas_sso_service_validate_url
+                          strategy.options[:login_url] = SiteSetting.cas_sso_login_url
+                          strategy.options[:logout_url] = SiteSetting.cas_sso_logout_url
+                          strategy.options[:uid_field] = SiteSetting.cas_sso_uid_field
+                        }
+    end
   end
 end
 
