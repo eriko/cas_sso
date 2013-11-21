@@ -6,7 +6,7 @@ CAS based single sign on for Discourse in plugin form.
 Installation
 ------------
 
-* Run `rake plugin:install repo=https://github.com/eriko/cas_sso plugin/cas_sso` in your discourse directory
+* Run `rake plugin:install repo=https://github.com/eriko/cas_sso` in your discourse directory
 * In development mode, run `rake assets:clean`
 * In production, recompile your assets: `rake assets:precompile`
 
