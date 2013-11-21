@@ -5,8 +5,13 @@ CAS based single sign on for Discourse in plugin form.
 
 Installation
 ------------
-In your discourse install directory
-`git  clone  https://github.com/eriko/cas_sso plugin/cas_sso`
+
+* Run `rake plugin:install repo=https://github.com/eriko/cas_sso plugin/cas_sso` in your discourse directory
+* In development mode, run `rake assets:clean`
+* In production, recompile your assets: `rake assets:precompile`
+
+Until the omniauth-cas gem that supports dynamic setup is released (it should be soon) you need to add the master branch
+to your Gemfile.
 
 Then add
     `gem 'omniauth-cas'     , git: 'https://github.com/dlindahl/omniauth-cas.git', branch: 'master'`
