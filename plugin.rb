@@ -44,9 +44,29 @@ class CASAuthenticator < ::Auth::Authenticator
 
     # plugin specific data storage
     current_info = ::PluginStore.get("cas", "cas_uid_#{auth_token[:uid]}")
+
+    # Create the user if possible.  In the case CAS we really do not want user
+    # to change their usernames and email addresses as that can mess things up.
+    # So by default this is turned on.
+    if SiteSetting.cas_sso_user_auto_create && User.find_by_email(email).nil?
+      user = User.create(name: result.name,
+                         email: result.email,
+                         username: result.username,
+                         approved: SiteSetting.cas_sso_user_approved)
+      ::PluginStore.set("cas", "cas_uid_#{user.username}", {user_id: user.id})
+      result.email_valid = true
+    end
+
     result.user =
         if current_info
           User.where(id: current_info[:user_id]).first
+        elif user = User.where(username: result.username).first
+          #here we get a user that has already been created but has never logged in with cas. This
+          # could happend if accounts are being pre previsionsed in an edu environment. We
+          #need to get the users and set the cas plugin information as in after_create_account
+          user.update_attribute(:approved, SiteSetting.cas_sso_user_approved)
+          ::PluginStore.set("cas", "cas_uid_#{result.username}", {user_id: user.id})
+          user
         end
     result.user ||= User.where(email: email).first
 
@@ -60,8 +80,6 @@ class CASAuthenticator < ::Auth::Authenticator
 
 
   def register_middleware(omniauth)
-    Rails.logger.info "in cas_sso plugin with omniauth of #{omniauth}"
-
     unless SiteSetting.cas_sso_url.empty?
       omniauth.provider :cas,
                         :setup => lambda { |env|

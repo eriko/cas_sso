@@ -14,7 +14,7 @@ cas_sso:
   cas_sso_logout_url:
     default: '/logout'
   cas_sso_service_validate_url:
-    default: '/service_validate_url'
+    default: '/serviceValidate'
   cas_sso_uid_field:
     default: 'user'
   cas_sso_name:
@@ -23,5 +23,7 @@ cas_sso:
     default:  'UserPrincipalName'
   cas_sso_email_domain:
     default:  'YOUR.EMAIL.DOMAIN'
+  cas_sso_user_auto_create:
+    default:  true
   cas_sso_user_approved:
     default:  true
