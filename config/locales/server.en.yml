@@ -12,5 +12,5 @@ en:
     cas_sso_name: 'Attribute in CAS return values that is the users display name'
     cas_sso_email: 'Attribute in CAS return values that is the users email address'
     cas_sso_email_domain: 'domain name to use in creating email address if one is not available in the CAS return attributes'
-    cas_sso_user_approved: 'Automatically create users that are created via CAS'
+    cas_sso_user_auto_create: 'Automatically create users that are created via CAS'
     cas_sso_user_approved: 'Automatically approve users that are created via CAS'
