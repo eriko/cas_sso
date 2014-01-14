@@ -43,7 +43,7 @@ class CASAuthenticator < ::Auth::Authenticator
                   end
 
     # plugin specific data storage
-    current_info = ::PluginStore.get("cas", "cas_uid_#{auth_token[:uid]}")
+    current_info = ::PluginStore.get("cas", "cas_uid_#{result.username}")
 
     # Create the user if possible.  In the case CAS we really do not want user
     # to change their usernames and email addresses as that can mess things up.
@@ -60,7 +60,7 @@ class CASAuthenticator < ::Auth::Authenticator
     result.user =
         if current_info
           User.where(id: current_info[:user_id]).first
-        elif user = User.where(username: result.username).first
+        elsif user = User.where(username: result.username).first
           #here we get a user that has already been created but has never logged in with cas. This
           # could happend if accounts are being pre previsionsed in an edu environment. We
           #need to get the users and set the cas plugin information as in after_create_account
