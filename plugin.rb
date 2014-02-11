@@ -3,14 +3,12 @@
 # version: 0.1.0
 # author: Erik Ordway
 require 'rubygems'
-#require_relative './../../app/models/site_setting'
-#require '../../app/models/site_setting'
 
 
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
 gem 'addressable', '2.3.5', require: false
-#gem 'omniauth-cas', '1.0.4'
+gem 'eriko-omniauth-cas', '1.0.4' ,require_name: 'omniauth-cas'
 
 
 class CASAuthenticator < ::Auth::Authenticator
