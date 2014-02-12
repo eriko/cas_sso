@@ -8,7 +8,7 @@ en:
     cas_sso_login_url: 'Partial path to login. Path setting will be applied so you should probably use one or another.'
     cas_sso_logout_url: 'Partial path to logout. Path setting will be applied so you should probably use one or another.'
     cas_sso_service_validate_url: 'Partial path to service validate. Path setting will be applied so you should probably use one or another.'
-    cas_sso_uid_key: 'The key in the cas attributes that denotes the uid_key if you have a non standard configuration'
+    cas_sso_uid_field: 'The key in the cas attributes that denotes the uid_key if you have a non standard configuration'
     cas_sso_name: 'Attribute in CAS return values that is the users display name'
     cas_sso_email: 'Attribute in CAS return values that is the users email address'
     cas_sso_email_domain: 'domain name to use in creating email address if one is not available in the CAS return attributes'
