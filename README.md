@@ -91,6 +91,20 @@ not be found the username will be used instead.
 Auto approve newly created users.
 *  plugin_cas_sso_user_approved = true
 
+CSS override of button text
+---------------------------
+If you like me only have one auth method activated and want to change the text in the little green button you can.
+Add at stylesheet customization like the one below.
+
+  `.btn-social.cas:before {
+     content: "YOUR LOGIN WORD HERE";
+     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  }`
+
+  `.btn-social:before {
+  margin-right: 5px;
+  }`
+
 
 Support
 -------
