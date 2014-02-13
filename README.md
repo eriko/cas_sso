@@ -10,23 +10,12 @@ Installation
 * In development mode, run `rake assets:clean`
 * In production, recompile your assets: `rake assets:precompile`
 
-Until the omniauth-cas gem that supports dynamic setup is released (it should be soon) you need to add the master branch
-to your Gemfile.
+Until the omniauth-cas gem that supports dynamic setup is released (it should be soon) the plugin uses
+a forked version that I maintain.
 
-Then add
-    `gem 'omniauth-cas'     , git: 'https://github.com/dlindahl/omniauth-cas.git', branch: 'master'`
-
-to your Gemfile or add
-    `, git: 'https://github.com/dlindahl/omniauth-cas.git', branch: 'master'`
-
-to the existing
-    `gem 'omniauth-cas'`
-
-if it already exists.
-
-  As usual now you will have to run `bundle install` and restart the application.
 The initial restart maybe a little slower than usual as the plugin also installs any plugins that it needs.
- In this case that is `addressable`.  This slow down should be a one time event unless the plugin is updated.
+In this case that is `addressable` and my forked `eriko-omniauth-cas`.  This slow down should be a one
+time event unless the plugin is updated.
 
 
 Setup
