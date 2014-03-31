@@ -1,12 +1,13 @@
 # name: CAS
 # about: Authenticate with discourse with CAS
-# version: 0.1.1
+# version: 0.1.2
 # author: Erik Ordway
 require 'rubygems'
 
 
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
+gem 'addressable', '2.3.6', require: false
 gem 'eriko-omniauth-cas', '1.0.5' ,require_name: 'omniauth-cas'
 
 
