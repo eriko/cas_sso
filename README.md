@@ -47,7 +47,7 @@ you may need to use the other settings.  To do so wipe out `plugin_cas_sso_url` 
     default: '/service_validate_url'`
 
   `cas_sso_uid_field:
-    default: 'user' 
+    default: 'user'
     `
 
 These are set to reasonable defaults but if you need to use them to deal if an oddly configured CAS then they are just a starting point.
@@ -67,18 +67,57 @@ These allow you to use the extra attributes that CAS can return if your CAS admi
 In my case we are using Active Directory as that CAS backend and the defaults are based on that.
 
 Attribute name in extra attributes for email address
-*  plugin_cas_sso_email = UserPrincipalName
+
+`cas_sso_email:
+     default:  'UserPrincipalName'`
 
 If the above is not set the plugin will set the email address to *username@YOUR.EMAIL.DOMAIN*
 if plugin_cas_sso_email_domain is set. Otherwise it will be set to *username@*
-*  plugin_cas_sso_email_domain = 'YOUR.EMAIL.DOMAIN'
+
+`cas_sso_email_domain:
+     default:  'YOUR.EMAIL.DOMAIN'`
 
 The attribute name in extra attributes for display name. If the attribute can
 not be found the username will be used instead.
-*  plugin_cas_sso_name = Name
+
+`cas_sso_name:
+     default: 'Name'`
+
+Auto create newly logged in CAS users (reject new users that do not have accounts already)
+
+`cas_sso_user_auto_create:
+     default:  true`
 
 Auto approve newly created users.
-*  plugin_cas_sso_user_approved = true
+
+`cas_sso_user_approved:
+     default:  true `
+
+Limit the auto creation of accounts by group membership in the optional Groups extension of CAS.  This will
+need to be turned on by you CAS administrator.  The default groups are based on LDAP paths but this may be different for
+your organization. Once again talk to your CAS administrator.  If the user is in a group that is in the allow list they are
+eligible to have an account created.  If on the other hand they they have a group that is in the deny list they will not
+and account created.  This data is processed by turning the two lists into Sets and then looking for an intersection.  The
+groups coming from CAS are split(', ') and this may be particular to Jasig CAS in combination with AD. The deny overrides the allow.
+
+If it does not work for your instance let me know, preferably with a sample of the groups data. Search for #DEBUGGING
+in pluging.rb to enable dumping of the groups data. You will need restart the app after it is uncommented.  You
+should disable this when you are done.
+
+`cas_sso_groups_allow_filter:
+    default:  false`
+`cas_sso_groups_allow:
+      client: true
+      type: list
+      default: 'CN=staff,OU=Groups,DC=example,DC=edu|CN=students,OU=Groups,DC=example,DC=edu|CN=faculty,OU=Groups,DC=example,DC=edu' `
+`cas_sso_groups_deny_filter:
+    default:  false`
+`cas_sso_groups_deny:
+      client: true
+      type: list
+      default: 'CN=staff,OU=Groups,DC=example,DC=edu|CN=students,OU=Groups,DC=example,DC=edu|CN=faculty,OU=Groups,DC=example,DC=edu' `
+
+
 
 CSS override of button text
 ---------------------------

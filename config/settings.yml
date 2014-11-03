@@ -27,3 +27,15 @@ cas_sso:
     default:  true
   cas_sso_user_approved:
     default:  true
+  cas_sso_groups_allow_filter:
+    default:  false
+  cas_sso_groups_allow:
+      client: true
+      type: list
+      default: 'CN=staff,OU=Groups,DC=example,DC=edu|CN=students,OU=Groups,DC=example,DC=edu|CN=faculty,OU=Groups,DC=example,DC=edu'
+  cas_sso_groups_deny_filter:
+    default:  false
+  cas_sso_groups_deny:
+      client: true
+      type: list
+      default: 'CN=staff,OU=Groups,DC=example,DC=edu|CN=students,OU=Groups,DC=example,DC=edu|CN=faculty,OU=Groups,DC=example,DC=edu'

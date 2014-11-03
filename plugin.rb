@@ -8,17 +8,18 @@ require 'rubygems'
 #addressable is set to require: false as the cas code will
 # load the actual part that it needs at runtime.
 gem 'addressable', '2.3.6', require: false
-gem 'eriko-omniauth-cas', '1.0.5' ,require_name: 'omniauth-cas'
+gem 'omniauth-cas', '1.1.0', require_name: 'omniauth-cas'
+
 
 
 class CASAuthenticator < ::Auth::Authenticator
-
 
   def name
     'cas'
   end
 
   def after_authenticate(auth_token)
+
     result = Auth::Result.new
     #if the email address is set in the extra attributes and we know the accessor use it here
     email = auth_token[:extra][SiteSetting.cas_sso_email] if (auth_token[:extra] && auth_token[:extra][SiteSetting.cas_sso_email])
@@ -43,16 +44,32 @@ class CASAuthenticator < ::Auth::Authenticator
     # plugin specific data storage
     current_info = ::PluginStore.get("cas", "cas_uid_#{result.username}")
 
+    #DEBUGGING log groups data if available.  Use to understand the format of your groups data
+    #logger.error  "CAS_SSO -->  Groups for user #{result.username} are #{auth_token[:extra]['Groups']}" if auth_token[:extra]['Groups']
+
     # Create the user if possible.  In the case CAS we really do not want user
     # to change their usernames and email addresses as that can mess things up.
     # So by default this is turned on.
+
     if SiteSetting.cas_sso_user_auto_create && User.find_by_email(email).nil?
-      user = User.create(name: result.name,
-                         email: result.email,
-                         username: result.username,
-                         approved: SiteSetting.cas_sso_user_approved)
-      ::PluginStore.set("cas", "cas_uid_#{user.username}", {user_id: user.id})
-      result.email_valid = true
+      #if there are groups in the data returned by CAS see if we need
+      #filter through the allow and deny groups
+      allowed_groups = true
+      denied_groups = false
+      if auth_token[:extra]['Groups']
+        users_groups = auth_token[:extra]['Groups'].split(', ')
+        allowed_groups = allowed_group(users_groups) if SiteSetting.cas_sso_groups_allow
+        denied_groups = denied_group(users_groups) if SiteSetting.cas_sso_groups_deny
+      end
+
+      if allowed_groups && !denied_groups
+        user = User.create(name: result.name,
+                           email: result.email,
+                           username: result.username,
+                           approved: SiteSetting.cas_sso_user_approved)
+        ::PluginStore.set("cas", "cas_uid_#{user.username}", {user_id: user.id})
+        result.email_valid = true
+      end
     end
 
     result.user =
@@ -69,6 +86,20 @@ class CASAuthenticator < ::Auth::Authenticator
     result.user ||= User.where(email: email).first
 
     result
+  end
+
+  def allowed_group(users_groups)
+    allowed_set = Set.new(SiteSetting.cas_sso_groups_allow.split('|'))
+    users_set = Set.new(users_groups)
+    #is there and intersection in the groups
+    (allowed_set & users_set).empty?
+  end
+
+  def denied_group(users_groups)
+    denied_set = Set.new(SiteSetting.cas_sso_groups_deny.split('|'))
+    users_set = Set.new(users_groups)
+    #is there and intersection in the groups
+    !(denied_set & users_set).empty?
   end
 
   def after_create_account(user, auth)
