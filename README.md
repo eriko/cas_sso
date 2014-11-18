@@ -135,6 +135,8 @@ If it does not work for your instance let me know, preferably with a sample of t
 in pluging.rb to enable dumping of the groups data. You will need restart the app after it is uncommented.  You
 should disable this when you are done.
 
+Required:  disable `allow new registration` in the settings.
+
 `cas_sso_groups_allow_filter:
     default:  false`
 `cas_sso_groups_allow:

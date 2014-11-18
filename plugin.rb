@@ -1,6 +1,6 @@
 # name: CAS
 # about: Authenticate with discourse with CAS
-# version: 0.1.3
+# version: 0.1.4
 # author: Erik Ordway
 require 'rubygems'
 
@@ -45,7 +45,7 @@ class CASAuthenticator < ::Auth::Authenticator
     current_info = ::PluginStore.get("cas", "cas_uid_#{result.username}")
 
     #DEBUGGING log groups data if available.  Use to understand the format of your groups data
-    #logger.error  "CAS_SSO -->  Groups for user #{result.username} are #{auth_token[:extra]['Groups']}" if auth_token[:extra]['Groups']
+    Rails.logger.error  "CAS_SSO -->  Groups for user #{result.username} are #{auth_token[:extra]['Groups']}" if auth_token[:extra]['Groups']
 
     # Create the user if possible.  In the case CAS we really do not want user
     # to change their usernames and email addresses as that can mess things up.
