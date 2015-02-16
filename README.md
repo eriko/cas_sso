@@ -1,3 +1,7 @@
+DEPRECATED
+==========
+use https://github.com/eriko/discourse_cas_sso instead
+
 cas_sso
 =======
 CAS based single sign on for Discourse in plugin form.
